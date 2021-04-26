@@ -5,25 +5,25 @@ ttype(_, N, int) :- number(N).
 ttype(Γ, op(_, E1, E2), int) :- 
     ttype(Γ,E1, int),
     ttype(Γ,E2, int).
-ttype(Γ, if(C, E1, E2), X) :-
+ttype(Γ, if(C, E1, E2), T) :-
     ttype(Γ,C, int),
-    ttype(Γ,E1, X),
-    ttype(Γ,E2, X).
-ttype(Γ, pair(E1, E2), (X, Y)) :-
-    ttype(Γ,E1, X),
-    ttype(Γ,E2, Y).
-ttype(Γ, fst(P), X) :-
-    ttype(Γ,P, (X, _)).
-ttype(Γ, snd(P), Y) :-
-    ttype(Γ,P, (_,Y)).
-ttype(Γ, abs(X, B), [IDET, BT]) :-
-    ttype(Γ, X, IDET),
-    ttype([(X, IDET)|Γ],B, BT).
-ttype(Γ, app(E0, E1), Y) :-
-    ttype(Γ,E1, X),
-    ttype(Γ,E0, [X, Y]).
+    ttype(Γ,E1, T),
+    ttype(Γ,E2, T).
+ttype(Γ, pair(E1, E2), (T1, T2)) :-
+    ttype(Γ,E1, T1),
+    ttype(Γ,E2, T2).
+ttype(Γ, fst(P), T) :-
+    ttype(Γ,P, (T, _)).
+ttype(Γ, snd(P), T) :-
+    ttype(Γ,P, (_,T)).
+ttype(Γ, abs(X, B), [TIde, TB]) :-
+    ttype(Γ, X, TIde),
+    ttype([(X, TIde)|Γ], B, TB).
+ttype(Γ, app(E1, E2), T0) :-
+    ttype(Γ,E2, T2),
+    ttype(Γ,E1, [T2, T0]).
 ttype(Γ, rec(X, B), T) :-
     ttype(Γ,X, T),
-    ttype([(X, T)|Γ],B, T).
+    ttype([(X, T)|Γ], B, T).
 ttype(X, T) :-
     ttype([], X, T).
