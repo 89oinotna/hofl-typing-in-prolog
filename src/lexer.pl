@@ -18,7 +18,7 @@ symbol(C, S) :-
     string_chars(S, [C]).
     
 word([C|Cs]) --> wl(C), wr(Cs).
-wl(C) --> [C], {char_type(C, alpha)}.
+wl(C) --> [C], {char_type(C, alnum)}.
 wr([C|Cs]) --> [C], {char_type(C, alnum)}, wr(Cs).
 wr([]) --> [].
 
