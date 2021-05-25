@@ -2,17 +2,17 @@
 
 parse(TOKENS, T) :- phrase(preterm(T), TOKENS).
 
-preterm([]) --> [].
+/*preterm([]) --> [].*/
 
 preterm(X) --> expr(X).
 
-preterm(abs(X, B)) --> ["\\"], variable(X), ["."], preterm(B).
+
 
 preterm(B) --> expr(A), preterm1(A, B).
 
 preterm1(A, B) --> expr(E), {Y=app(A, E)}, preterm1(Y, B).
 preterm1(A, B) --> {A=B}.
-
+expr(abs(X, B)) --> ["\\"], variable(X), ["."], preterm(B).
 expr(rec(X, B)) --> ["rec"], variable(X), ["."], preterm(B).
 
 expr(pair(X, Y)) --> ["("], preterm(X), [","], preterm(Y), [")"].
