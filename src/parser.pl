@@ -8,19 +8,20 @@ preterm(X) --> expr(X).
 
 preterm(abs(X, B)) --> ["\\"], variable(X), ["."], preterm(B).
 
-preterm(app(F, A)) --> preterm(F), expr(A).
+preterm(B) --> expr(A), preterm1(A, B).
 
-preterm(rec(X, B)) --> ["rec"], variable(X), ["."], preterm(B).
+preterm1(A, B) --> expr(E), {Y=app(A, E)}, preterm1(Y, B).
+preterm1(A, B) --> {A=B}.
 
-preterm(pair(X, Y)) --> ["("], preterm(X), [","], preterm(Y), [")"].
+expr(rec(X, B)) --> ["rec"], variable(X), ["."], preterm(B).
 
-preterm(fst(X)) --> ["fst("], preterm(X), [")"].
+expr(pair(X, Y)) --> ["("], preterm(X), [","], preterm(Y), [")"].
 
-preterm(snd(Y)) --> ["snd("], preterm(Y), [")"].
+expr(fst(X)) --> ["fst("], preterm(X), [")"].
 
-preterm(cond(C, B1, B2)) --> ["if"], preterm(C), ["then"], preterm(B1), ["else"], preterm(B2).
+expr(snd(Y)) --> ["snd("], preterm(Y), [")"].
 
-variable(var(X)) --> [Y], {atom_string(X, Y), \+number_string(_, Y), \+member(Y, [".", "+", "-", "*", "(", ")", "\\", ","])}.
+expr(cond(C, B1, B2)) --> ["if"], preterm(C), ["then"], preterm(B1), ["else"], preterm(B2).
 
 expr(Y) --> term(X), expr1(X, Y).
 
@@ -37,5 +38,8 @@ term1(X, R) --> {R=X}.
 factor(X) --> ["("], preterm(X), [")"].
 factor(N) --> [I], {number_string(N, I)}.
 factor(V) --> variable(V).
+
+variable(var(X)) --> [Y], {atom_string(X, Y), \+number_string(_, Y), \+member(Y, [".", "+", "-", "*", "(", ")", "\\", ","])}.
+
 
 
