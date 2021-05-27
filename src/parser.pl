@@ -12,8 +12,8 @@ preterm(B) --> expr(A), preterm1(A, B).
 
 preterm1(A, B) --> expr(E), {Y=app(A, E)}, preterm1(Y, B).
 preterm1(A, B) --> {A=B}.
-expr(abs(X, B)) --> ["\\"], variable(X), ["."], preterm(B).
-expr(rec(X, B)) --> ["rec"], variable(X), ["."], preterm(B).
+expr(abst(X, B)) --> ["\\"], argument(X), ["."], preterm(B).
+expr(rec(X, B)) --> ["rec"], argument(X), ["."], preterm(B).
 
 expr(pair(X, Y)) --> ["("], preterm(X), [","], preterm(Y), [")"].
 
@@ -41,5 +41,6 @@ factor(V) --> variable(V).
 
 variable(var(X)) --> [Y], {atom_string(X, Y), \+number_string(_, Y), \+member(Y, [".", "+", "-", "*", "(", ")", "\\", ","])}.
 
+argument(X) --> [Y], {atom_string(X, Y), \+number_string(_, Y), \+member(Y, [".", "+", "-", "*", "(", ")", "\\", ","])}.
 
 
