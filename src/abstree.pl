@@ -3,5 +3,5 @@
 :- use_module(parser).
 
 abstree(INPUT, T) :- 
-    tokenize(INPUT, TOKENS),
+    tokenize(INPUT, TOKENS),!,
     parse(TOKENS, T).

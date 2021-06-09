@@ -1,26 +1,70 @@
 :- module(typing, [inferType/2]).
 :- use_module(latex).
 
+inferType(X, T) :- 
+    inferType([], X, T).
 
+inferType(_, N, T) :-
+    number(N),
+    T = int.
+
+inferType(ENV, bin_op(_, E1, E2), T) :-
+    inferType(ENV, E1, int),
+    inferType(ENV, E2, int),
+    T=int.
+
+inferType(ENV, cond(C, E1, E2), T) :- 
+    inferType(ENV, C, int),
+    inferType(ENV, E1, T),
+    inferType(ENV, E2, T).
+
+inferType(ENV, pair(E1, E2), T) :-
+    inferType(ENV, E1, T1),
+    inferType(ENV, E2, T2),
+    T = (T1, T2).
+
+inferType(ENV, fst(E), T) :-
+    inferType(ENV, E, (T1, _)),
+    T = T1.
+
+inferType(ENV, snd(E), T) :-
+    inferType(ENV, E, (_, T2)),
+    T = T2.
+
+inferType(ENV, abst(X, B), T) :-
+    !,
+    inferType([(X, TA)|ENV], B, TB),
+    T=[TA, TB].
+
+inferType(ENV, app(E1, E2), T1) :-
+    inferType(ENV, E1, [T0, T1]),
+    inferType(ENV, E2, T0).
+
+inferType(ENV, rec(X, B), T) :-
+    inferType([(X, T)|ENV], B, T).
+
+inferType(ENV, id(X), T) :- 
+    nth0(_, ENV, (X, T)).
+/*.
+% entry point
 inferType(X, T) :-
-    inferType([], term(X, tau(0)), T).
+    %pre(term(X, tau(I)), T),
+    inferType([], term(X, tau(0)), T).%,
+    %post(term(X, tau(I)), T).
 
-
-
-inferType(ENV, term(var(X), tau(I)), T) :-
-    /*pre(term(var(X), tau(I))),*/
-    nth0(_, ENV, (X, T))/*,
-    after(term(var(X), tau(I)), T)*/.
-
-
+inferType(ENV, term(id(X), tau(I)), T) :-
+    
+    nth0(_, ENV, (X, T, Y)),
+    pre(term(id(X), tau(I)), Y),
+    post(term(id(X), tau(I)), T).
 
 inferType(ENV, term(bin_op(O, E1, E2), tau(I)), int) :-
-    info(term(bin_op(O, E1, E2), tau(I)), int),
+    pre(term(bin_op(O, E1, E2), tau(I)), int),
     I1 is I +1,
     I2 is I1+1,
     inferType(ENV,term(E1, tau(I1)), int),
     inferType(ENV,term(E2, tau(I2)), int),
-    info(term(bin_op(O, E1, E2), tau(I)), int).
+    post(term(bin_op(O, E1, E2), tau(I)), int).
 
 inferType(ENV, term(if(C, E1, E2), tau(I)), T) :-
     info(if(C, E1, E2), T),
@@ -47,12 +91,11 @@ inferType(ENV, term(snd(P), tau(I)), T) :-
     info(snd(P), T).
 
 inferType(ENV, term(abst(X, B), tau(I)), [TIde, TB]) :-
-    info(term(abst(X, B), tau(I)), [TIde, TB]),
     I1 is I+1,
     I2 is I1+1,
-    inferType(ENV, term(X, tau(I1)), TIde),
-    inferType([(X, TIde)|ENV], term(B, tau(I2)), TB),
-    info(abst(X, B), [TIde, TB]).
+    pre(term(abst(X, B), tau(I)), [tau(I1), tau(I2)]),
+    inferType([(X, TIde, tau(I1))|ENV], term(B, tau(I2)), TB),
+    post(term(abst(X, B), [tau(I1), tau(I2)]), [TIde, TB]).
 
 inferType(ENV, term(app(E1, E2), tau(I)), T0) :-
     info(app(E1, E2), T0),
@@ -61,14 +104,15 @@ inferType(ENV, term(app(E1, E2), tau(I)), T0) :-
     info(app(E1, E2), T0).
 
 inferType(ENV, term(rec(X, B), tau(I)), T) :-
-    info(rec(X, B), T),
-    inferType(ENV, term(X, T), T),
-    inferType([(X, T)|ENV], term(B, T), T),
-    info(rec(X, B), T).
-
-inferType(_, term(X, _), _) :- atom(X).
+    pre(term(rec(X, B), tau(I)), T),
+    inferType(ENV, term(X, tau(I)), T),
+    inferType([(X, T, tau(I))|ENV], term(B, tau(I)), T),
+    post(term(rec(X, B), tau(I)), T).
 
 inferType(ENV, term(N, tau(I)), T) :-
-    info(term(N, tau(I)), int),
+    pre(term(N, tau(I)), int),
     number(N),
-    info(term(N, int), int).
+    post(term(N, int), int).
+
+inferType(_, term(X, _), _) :- atom(X).*/
+

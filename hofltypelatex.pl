@@ -1,8 +1,8 @@
 :- use_module(src/abstree).
 :- use_module(src/typing).
 
-b(X, R) :-
-    abstree(X, T),!,
-    write(T),
+b(X, TYPE) :-
+    abstree(X, TERM),!,
+    write(TERM),
     format("~n"),
-    inferType(T, R).
+    inferType(TERM, TYPE).
