@@ -4,37 +4,30 @@
 inferType(X, T) :- 
     inferType([], X, T).
 
-inferType(_, N, T) :-
-    number(N),
-    T = int.
+inferType(_, N, int) :-
+    number(N).
 
-inferType(ENV, bin_op(_, E1, E2), T) :-
+inferType(ENV, bin_op(_, E1, E2), int) :-
     inferType(ENV, E1, int),
-    inferType(ENV, E2, int),
-    T=int.
+    inferType(ENV, E2, int).
 
 inferType(ENV, cond(C, E1, E2), T) :- 
     inferType(ENV, C, int),
     inferType(ENV, E1, T),
     inferType(ENV, E2, T).
 
-inferType(ENV, pair(E1, E2), T) :-
+inferType(ENV, pair(E1, E2), (T1, T2)) :-
     inferType(ENV, E1, T1),
-    inferType(ENV, E2, T2),
-    T = (T1, T2).
+    inferType(ENV, E2, T2).
 
-inferType(ENV, fst(E), T) :-
-    inferType(ENV, E, (T1, _)),
-    T = T1.
+inferType(ENV, fst(E), T1) :-
+    inferType(ENV, E, (T1, _)).
 
-inferType(ENV, snd(E), T) :-
-    inferType(ENV, E, (_, T2)),
-    T = T2.
+inferType(ENV, snd(E), T2) :-
+    inferType(ENV, E, (_, T2)).
 
-inferType(ENV, abst(X, B), T) :-
-    !,
-    inferType([(X, TA)|ENV], B, TB),
-    T=[TA, TB].
+inferType(ENV, abst(X, B), [TA, TB]) :-
+    inferType([(X, TA)|ENV], B, TB).
 
 inferType(ENV, app(E1, E2), T1) :-
     inferType(ENV, E1, [T0, T1]),

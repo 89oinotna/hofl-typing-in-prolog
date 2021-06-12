@@ -26,9 +26,9 @@ atom(rec(X, B)) --> ["rec"],!, argument(X), ["."], sterm(B).
 
 atom(pair(X, Y)) --> ["("], sterm(X), [","], sterm(Y), [")"].
 
-atom(fst(X)) --> ["fst("],!, sterm(X), [")"].
+atom(fst(X)) --> ["fst"],!,["("], sterm(X), [")"].
 
-atom(snd(Y)) --> ["snd("],!, sterm(Y), [")"].
+atom(snd(Y)) --> ["snd"],!,["("], sterm(Y), [")"].
 
 atom(cond(C, B1, B2)) --> ["if"],!, sterm(C), ["then"], sterm(B1), ["else"], sterm(B2).
 
