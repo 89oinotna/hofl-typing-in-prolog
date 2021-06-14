@@ -3,6 +3,7 @@
 :- use_module(src/abstree).
 :- use_module(src/typing).
 :- use_module(src/canonical).
+:- use_module(src/latex).
 
 :- initialization(main, main).
 
@@ -11,11 +12,20 @@ main(Argv) :-
     opt_parse(OptsSpec, Argv, Opts, PositionalArgs)
     . 
 
-ttype(X, TYPE) :-
+ttype(X, TYPE, TypeTerm) :-
     abstree(X, TERM),!,
     write(TERM),
     format("~n"),
-    inferType(TERM, TYPE).
+    inferType(TERM, TYPE, TypeTerm).
+
+llatex(X) :-
+    abstree(X, TERM),!,
+    write(TERM),
+    format("~n"),
+    inferType(TERM, TYPE, TypedTerm),
+    write(TypedTerm),
+    format("~n"),
+    write_latex(TypedTerm).
 
 get_canonical(T, C) :- 
     abstree(T, TERM),

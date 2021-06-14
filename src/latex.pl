@@ -1,63 +1,103 @@
-:- module(latex, [info/2, pre/2, post/2]).
+:- module(latex, [write_latex/1]).
 
-info(X, T) :-
-	write(X),
-    /*format(" : "),
-    write(T),*/
-    format("~n").
+write_latex(typed(abst(X, B), [TA | TB])) :- 
+    write("\\underbracket{"),
+        write("\\lambda"),
+        format("\\underbracket{~p}_{\\mathsf{~p}} . ", [X, TA]),
+        write_latex(B),
+        /*write("\\underbracket{"),
+            write_latex(B),
+            write("}_{\\mathsf{"),
+            write(TB),
+            write("}}"),*/
+    write("}_{\\mathsf{"),
+    write([TA | TB]),
+    write("}}").
 
-pre(term(abst(X, B), T0), [T1|T2] ) :-
-    Y = [T1|T2],
-    write(term(abst(X, B), T0)),
-    format("~n ~t "),
-    write(T0),
-    format(" = "),
-    write(Y),
+write_latex(typed(N, int)) :-
+    number(N),
+    format("\\underbracket{~d}_{\\mathsf{int}}", N).
+
+write_latex(typed(bin_op(OP, TT1, TT2),int)) :-
+    write("\\underbracket{"),
+    write_latex(TT1),
+    write(OP),
+    write_latex(TT2),
+    write("}_{\\mathsf{int}}").
+
+write_latex(typed(cond(TTC, TT1, TT2), T)) :- 
+    write(" if \\underbracket{"),
+    write_latex(TTC),
+    write(" then "),
+    write_latex(TT1),
+    write(" else "),
+    write_latex(TT2),
+    write("}_{\\mathsf{"),
+    write(T),
+    write("}}").
+
+write_latex(typed(pair(TT1, TT2), (T1, T2))) :-
+    write("\\underbracket{("),
+    write_latex(TT1),
     write(", "),
-    write(cap(X)), %cappuccio ^
-    format(" = "),
+    write_latex(TT2),
+    write(")}_{\\mathsf{"),
+    write((T1, T2)),
+    write("}}").
+
+write_latex(typed(fst(TT1), T1)) :-
+    write("\\underbracket{fst("),
+    write_latex(TT1),
+    write(")}_{\\mathsf{"),
     write(T1),
-    format("~n").
+    write("}}").
 
-pre(term(bin_op(O, E1, E2), tau(I)), int):-
-    write(term(bin_op(O, E1, E2), tau(I))),
-    format("~n ~t "),
-    write(tau(I)),
-    format(" = "),
-    write(int),
-    write(", "),
-    write(E1),
-    format(" = "),
-    write(int),
-    write(", "),
-    write(E2),
-    format(" = "),
-    write(int),
-    format("~n").
+write_latex(typed(snd(TT2), T2)) :-
+    write("\\underbracket{snd("),
+    write_latex(TT2),
+    write(")}_{\\mathsf{"),
+    write(T2),
+    write("}}").
 
-pre(term(X, TAU), T) :-
-    write(term(X, TAU)),
-    format("~n ~t "),
-    write(TAU),
-    format(" = "),
-    write(T),
+write_latex(typed(app(TT, TT0), T1)) :-
+    write("\\underbracket{"),
+    write_latex(TT),
     write(" "),
-    
-    format("~n").
+    write_latex(TT0),
+    write("}_{\\mathsf{"),
+    write(T1),
+    write("}}").
 
-post(term(X, TAU), T) :-
-    var(T),
-    write(term(X, TAU)),
-    format("~n ~t "),
-    write(TAU),    
-    format("~n").
-
-post(term(X, TAU), T) :-
-    write(term(X, TAU)),
-    format("~n ~t "),
-    write(TAU),
-    format(" = "),
+write_latex(typed(rec(X, TT), T)) :-
+    write("\\underbracket{rec "),
+        format("\\underbracket{~p}_{\\mathsf{~p}} . ", [X, T]),
+        write("\\underbracket{"),
+            write_latex(TT),
+            write("}_{\\mathsf{"),
+            write(T),
+            write("}}"),
+    write(")}_{\\mathsf{"),
     write(T),
-    write(" "),
-    
-    format("~n").
+    write("}}").
+
+write_latex(typed(id(X), T)) :- 
+    write("\\underbracket{"),
+    write(X),
+    write("}_{\\mathsf{"),
+    write(T),
+    write("}}").
+
+write_latex(typed(Term, Type)) :-
+    write("\\underbracket{"),
+    write(Term),
+    %write_latex(Term),
+    write("}_{\\mathsf{"),
+    write(Type),
+    write("}}").
+
+
+/*\[\underbracket{
+    \underbracket{x}_{
+        \mathit{int}} - \underbracket{1}_{\mathit{int}}
+    }_{\mathsf{int}}
+\]*/
