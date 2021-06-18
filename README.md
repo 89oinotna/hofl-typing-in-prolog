@@ -5,7 +5,7 @@ The program reads a typeable HOFL term and assigns types to it producing a LaTeX
 ## HOFL
 
 ### Terms
-![hofl terms](hofl_terms.jpg)
+<img src="hofl_terms.jpg" alt="hofl terms" width="60%"/>
 
 ### Types
 
@@ -13,19 +13,20 @@ The program reads a typeable HOFL term and assigns types to it producing a LaTeX
 
 
 ### Type judgements
-![hofl type judgements](hofl_type_judgements.jpg)
+<img src="hofl_type_judgements.jpg" alt="type judgements" width="30%"/>
+
 
 types are assigned to pre-terms using a set of inference rules
 (structural induction of HOFL syntax)
 
 ### Type system
-![hofl type system](hofl_type_system.jpg)
+<img src="hofl_type_system.jpg" alt="hofl type system" width="80%"/>
 
 #### Well Formed term
-![well formed term](hofl_well_formed.jpg)
+<img src="hofl_well_formed.jpg" alt="well formed term" width="40%"/>
 
 ### Type inference
 Type rules are used to derive type constraints (type equations) whose solutions (via unification) define the principal type.
 
 #### Produced typed term
-![typing example](hofl_fact_typing.jpg)
+<img src="hofl_fact_typing.jpg" alt="typing example" width="50%"/>
