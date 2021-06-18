@@ -35,7 +35,7 @@ subst(abst(Y, B), T, X, abst(Z, R)) :-
     fv(T, S1),
     union(S0, S1, S01),
     union(S01, [Y], S2),
-    atomic_list_concat([S2], Z),
+    atomic_list_concat(S2, Z),
     subst(B, Z, Y, R0),
     subst(R0, T, X, R).
 
@@ -44,6 +44,6 @@ subst(rec(Y, B), T, X, rec(Z, R)) :-
     fv(T, S1),
     union(S0, S1, S01),
     union(S01, [Y], S2),
-    atomic_list_concat([S2], Z),
+    atomic_list_concat(S2, Z),
     subst(B, Z, Y, R0),
     subst(R0, T, X, R).
