@@ -1,6 +1,7 @@
 # hofl-typing-in-prolog
 Higher order functional language typing in prolog.
 The program reads a typeable HOFL term and assigns types to it producing a LaTeX representation.
+There are also auxiliar predicates for capture-avoiding substituitions, free variables, canonical form derivation, canonical form checking
 
 ## HOFL
 

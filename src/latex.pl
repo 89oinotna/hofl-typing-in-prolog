@@ -3,8 +3,6 @@
 write_latex(TT) :-
     write_latex(0, TT).
 
-type_to_write( NTAU, T,  NTAU, T) :-
-    \+var(T).
 
 type_to_write( NTAU, T, RNTAU, tau(RNTAU)) :-
     var(T),
@@ -18,6 +16,10 @@ type_to_write( NTAU, tpair(T1, T2), RNTAU1, tpair(WT1, WT2)) :-
 type_to_write( NTAU, tfun(TA, TB), RNTAU1, tfun(WTA, WTB)) :-
     type_to_write( NTAU, TA, RNTAU, WTA),
     type_to_write(RNTAU, TB, RNTAU1, WTB).
+
+type_to_write( NTAU, T,  NTAU, T) :-
+    \+var(T).
+
 
 write_type(tfun(TA, TB)) :-
     write_type(TA),

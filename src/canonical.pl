@@ -3,9 +3,7 @@
 :- use_module(substitutions).
 :- use_module(typing).
 
-% we assign semanticsonly to terms that are:well-formed and closed
-
-
+% we assign semantics only to terms that are:well-formed and closed
 
 canonic(pair(E1, E2), pair(E1, E2)) :-
     inferType(E1, T1, TT1),

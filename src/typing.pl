@@ -1,6 +1,13 @@
 :- module(typing, [inferType/3]).
 :- use_module(latex).
 
+/* 
+The env list is used to store all the variables in the scope and their type 
+so that we can unify on it and propagate everywhere
+*/
+
+
+
 inferType(X, T, TypedTerm) :- 
     inferType([], X, T, TypedTerm).
 
