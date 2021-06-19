@@ -5,7 +5,7 @@ The program reads a typeable HOFL term and assigns types to it producing a LaTeX
 ## HOFL
 
 ### Terms
-<img src="hofl_terms.jpg" alt="hofl terms" width="60%"/>
+<img src="hofl_terms.jpg" alt="hofl terms" width="70%"/>
 
 ### Types
 
