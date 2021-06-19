@@ -32,7 +32,7 @@ Type rules are used to derive type constraints (type equations) whose solutions 
 We assign semantics only to terms that are well-formed and closed.
 
 #### Lazy operational semantics
-<img src="hofl_lazy_op.jpg" alt="lazy operational semantics" width="50%"/>
+<img src="hofl_lazy_op.jpg" alt="lazy operational semantics" width="80%"/>
 
 # Usage
 
