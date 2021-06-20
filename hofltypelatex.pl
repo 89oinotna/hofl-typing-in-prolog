@@ -4,13 +4,54 @@
 :- use_module(src/typing).
 :- use_module(src/canonical).
 :- use_module(src/latex).
-
+%:- style_check(-singleton).
 :- initialization(main, main).
 
 main(Argv) :-
-    opt_help(OptsSpec, HelpText),
-    opt_parse(OptsSpec, Argv, Opts, PositionalArgs)
+    opts_spec(OptsSpec),
+    opt_parse(OptsSpec, Argv, Opts, PositionalArgs),
+    ( 
+        member(help(true), Opts) -> (opt_help(OptsSpec, Help), write(Help));
+        
+        member(mode(canonical), Opts) -> opts_canonical(Opts, PositionalArgs);
+
+        member(mode(typing), Opts) -> write("ciao")
+        
+    
+        ); (opt_help(OptsSpec, Help), write(Help))
     . 
+
+opts_canonical(Opts, PositionalArgs) :-
+    (
+        member(infile(IF), Opts) -> read_file_to_string(IF, T, []);
+        [T|Tail] = PositionalArgs
+    ),
+    get_canonical(T, C),
+    (
+        member(outfile(OF), Opts) -> write_file(OF, C);
+        write(C)
+    ).
+
+opts_type(Opts, PositionalArgs) :-
+    (
+        member(infile(IF), Opts) -> read_file_to_string(IF, T, []);
+        [T|Tail] = PositionalArgs
+    ),
+    abstree(T, TERM),!,
+    
+    inferType(TERM, TYPE, TypedTerm),
+    
+
+    (
+        member(outfile(OF), Opts) -> write_latex_file(OF, TypedTerm);
+        write_latex(TypedTerm)
+    ).
+
+write_file(F, T) :-
+    open(F,write,OS),
+    write(OS,T),
+    close(OS).
+
 
 ttype(X, TYPE, TypeTerm) :-
     abstree(X, TERM),!,
@@ -31,42 +72,22 @@ get_canonical(T, C) :-
     abstree(T, TERM),
     canonic(TERM, C).
 
-OptsSpec =
+opts_spec(
     [ [opt(mode), type(atom), default('SCAN'),
         shortflags([m]),   longflags(['mode'] ),
-        help([ 'data gathering mode, one of'
-             , '  SCAN: do this'
-             , '  READ: do that'
-             , '  MAKE: fabricate some numbers'
-             , '  WAIT: don''t do anything'])]
+        help([ 'Modes are:'
+             , '  CANONICAL: derive the canonical form'
+             , '  TYPING: assigns types to a term'])]
 
-    , [opt(cache), type(boolean), default(true),
-        shortflags([r]),   longflags(['rebuild-cache']),
-        help('rebuild cache in each iteration')]
-
-    , [opt(threshold), type(float), default(0.1),
-        shortflags([t,h]),  longflags(['heisenberg-threshold']),
-        help('heisenberg threshold')]
-
-    , [opt(depth), meta('K'), type(integer), default(3),
-        shortflags([i,d]),longflags([depths,iters]),
-        help('stop after K iterations')]
-
-    , [opt(distances), default([1,2,3,5]),
-        longflags([distances]),
-        help('initial prolog term')]
-
-    , [opt(outfile), meta('FILE'), type(atom),
+    , [opt(outfile), meta('OFILE'), type(atom),
         shortflags([o]),  longflags(['output-file']),
-        help('write output to FILE')]
+        help('write output to OFILE')]
 
-    , [opt(label), type(atom), default('REPORT'),
-        shortflags([l]), longflags([label]),
-        help('report label')]
+    , [opt(infile),  meta('IFILE'), type(atom),
+        shortflags([f]), help('read term from IFILE')]
 
-    , [opt(verbose),  meta('V'), type(integer), default(2),
-        shortflags([v]),  longflags([verbosity]),
-        help('verbosity level, 1 <= V <= 3')]
-
-    , [opt(path), default('/some/file/path/')]
-    ].
+    , [opt(help),  type(boolean), default(false), 
+        shortflags([h]), help('Help')]
+    , [opt(latex),  type(boolean), default(false), 
+        shortflags([l]), help('Write latex typing')]
+    ]).
