@@ -5,17 +5,20 @@
 :- use_module(src/canonical).
 :- use_module(src/latex).
 %:- style_check(-singleton).
+
 :- initialization(main, main).
 
 main(Argv) :-
+    
     opts_spec(OptsSpec),
     opt_parse(OptsSpec, Argv, Opts, PositionalArgs),
+    
     ( 
         member(help(true), Opts) -> (opt_help(OptsSpec, Help), write(Help));
         
         member(mode(canonical), Opts) -> opts_canonical(Opts, PositionalArgs);
 
-        member(mode(typing), Opts) -> write("ciao")
+        member(mode(typing), Opts) -> opts_type(Opts, PositionalArgs)
         
     
         ); (opt_help(OptsSpec, Help), write(Help))
@@ -24,7 +27,7 @@ main(Argv) :-
 opts_canonical(Opts, PositionalArgs) :-
     (
         member(infile(IF), Opts) -> read_file_to_string(IF, T, []);
-        [T|Tail] = PositionalArgs
+        ([T|Tail] = PositionalArgs, write(T))
     ),
     get_canonical(T, C),
     (
@@ -34,17 +37,18 @@ opts_canonical(Opts, PositionalArgs) :-
 
 opts_type(Opts, PositionalArgs) :-
     (
-        member(infile(IF), Opts) -> read_file_to_string(IF, T, []);
-        [T|Tail] = PositionalArgs
+        member(infile(IF), Opts) -> (
+            \+var(IF) -> read_file_to_string(IF, T, []);
+            [T|Tail] = PositionalArgs
+        )
     ),
     abstree(T, TERM),!,
     
     inferType(TERM, TYPE, TypedTerm),
-    
 
     (
-        member(outfile(OF), Opts) -> write_latex_file(OF, TypedTerm);
-        write_latex(TypedTerm)
+        member(outfile(OF), Opts) -> (write_latex(TypedTerm, String), write_file(OF, String));
+        (write_latex(TypedTerm, String), write(String))
     ).
 
 write_file(F, T) :-
