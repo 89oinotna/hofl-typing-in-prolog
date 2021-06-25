@@ -16,7 +16,9 @@ main(Argv) :-
         
         member(mode(canonical), Opts) -> opts_canonical(Opts, PositionalArgs);
 
-        member(mode(typing), Opts) -> opts_type(Opts, PositionalArgs)
+        member(mode(typing), Opts) -> opts_type(Opts, PositionalArgs);
+
+        (opt_help(OptsSpec, Help), write(Help))
     )
     . 
 
@@ -24,7 +26,7 @@ opts_canonical(Opts, PositionalArgs) :-
     (
         member(infile(IF), Opts) -> (
             \+var(IF) -> read_file_to_string(IF, T, []);
-            [T|Tail] = PositionalArgs
+            [T|_] = PositionalArgs
         )
     ),
     abstree(T, TERM),!,
@@ -38,12 +40,12 @@ opts_type(Opts, PositionalArgs) :-
     (
         member(infile(IF), Opts) -> (
             \+var(IF) -> read_file_to_string(IF, T, []);
-            [T|Tail] = PositionalArgs
+            [T|_] = PositionalArgs
         )
     ),
     abstree(T, TERM),!,
     
-    inferType(TERM, TYPE, TypedTerm),
+    inferType(TERM, _, TypedTerm),
     write(TypedTerm),
     member(outfile(OF), Opts) -> (
         (\+var(OF), get_latex(TypedTerm, String), write_file(OF, String));
@@ -73,7 +75,7 @@ llatex(X) :-
     abstree(X, TERM),!,
     write(TERM),
     format("~n"),
-    inferType(TERM, TYPE, TypedTerm),
+    inferType(TERM, _, TypedTerm),
     write(TypedTerm),
     format("~n"),
     get_latex(TypedTerm, S),
