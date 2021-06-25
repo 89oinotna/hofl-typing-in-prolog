@@ -9,31 +9,30 @@
 :- initialization(main, main).
 
 main(Argv) :-
-    
     opts_spec(OptsSpec),
     opt_parse(OptsSpec, Argv, Opts, PositionalArgs),
-    
-    ( 
+    (
         member(help(true), Opts) -> (opt_help(OptsSpec, Help), write(Help));
         
         member(mode(canonical), Opts) -> opts_canonical(Opts, PositionalArgs);
 
         member(mode(typing), Opts) -> opts_type(Opts, PositionalArgs)
-        
-    
-        ); (opt_help(OptsSpec, Help), write(Help))
+    )
     . 
 
 opts_canonical(Opts, PositionalArgs) :-
     (
-        member(infile(IF), Opts) -> read_file_to_string(IF, T, []);
-        ([T|Tail] = PositionalArgs, write(T))
+        member(infile(IF), Opts) -> (
+            \+var(IF) -> read_file_to_string(IF, T, []);
+            [T|Tail] = PositionalArgs
+        )
     ),
-    get_canonical(T, C),
-    (
-        member(outfile(OF), Opts) -> write_file(OF, C);
-        write(C)
-    ).
+    abstree(T, TERM),!,
+    write(TERM),
+    canonic(TERM, C),
+    write(C).
+    %(member(outfile(OF), Opts) -> (\+var(OF), write_file(OF, C))).
+    
 
 opts_type(Opts, PositionalArgs) :-
     (
@@ -45,15 +44,22 @@ opts_type(Opts, PositionalArgs) :-
     abstree(T, TERM),!,
     
     inferType(TERM, TYPE, TypedTerm),
-
-    (
-        member(outfile(OF), Opts) -> (write_latex(TypedTerm, String), write_file(OF, String));
-        (write_latex(TypedTerm, String), write(String))
-    ).
+    write(TypedTerm),
+    member(outfile(OF), Opts) -> (
+        (\+var(OF), get_latex(TypedTerm, String), write_file(OF, String));
+        (get_latex(TypedTerm, String), format("~n"), write(String))
+    )
+    . 
 
 write_file(F, T) :-
     open(F,write,OS),
+    writeln(OS, "\\documentclass[10pt]{article}"),
+    writeln(OS, "\\usepackage{mathtools}"),
+    writeln(OS, "\\begin{document}"),
+    writeln(OS, "\\["),
     write(OS,T),
+    writeln(OS, "\\]"),
+    writeln(OS,"\\end{document}"),
     close(OS).
 
 
@@ -70,7 +76,8 @@ llatex(X) :-
     inferType(TERM, TYPE, TypedTerm),
     write(TypedTerm),
     format("~n"),
-    write_latex(TypedTerm).
+    get_latex(TypedTerm, S),
+    write(S).
 
 get_canonical(T, C) :- 
     abstree(T, TERM),
@@ -80,8 +87,8 @@ opts_spec(
     [ [opt(mode), type(atom), default('SCAN'),
         shortflags([m]),   longflags(['mode'] ),
         help([ 'Modes are:'
-             , '  CANONICAL: derive the canonical form'
-             , '  TYPING: assigns types to a term'])]
+             , '  canonical: derive the canonical form'
+             , '  typing: assigns types to a term'])]
 
     , [opt(outfile), meta('OFILE'), type(atom),
         shortflags([o]),  longflags(['output-file']),
@@ -91,7 +98,6 @@ opts_spec(
         shortflags([f]), help('read term from IFILE')]
 
     , [opt(help),  type(boolean), default(false), 
-        shortflags([h]), help('Help')]
-    , [opt(latex),  type(boolean), default(false), 
-        shortflags([l]), help('Write latex typing')]
+        longflags(['help'] ),shortflags([h]), help('Help')]
+    
     ]).

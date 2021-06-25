@@ -1,11 +1,17 @@
 :- module(substitutions,[subst/4]).
 :- use_module(freevars).
 
-subst(N, T, X, R) :- number(N), R = N.
+% to apply capture avoiding substitutions
+/* 
+fresh names are created by concatenation of all the free variables 
+and the repetition of the variable we were substituting
+*/
 
-subst(id(Y), T, Y, T).
+subst(N, _, _, R) :- number(N), R = N.
 
-subst(id(Y), T, X, id(Y)).
+subst(id(Y), T, Y, T) :- number(T).
+subst(id(Y), T, Y, id(T)).
+subst(id(Y), _, _, id(Y)).
 
 subst(bin_op(O, E1, E2), T, X, bin_op(O, R1, R2)) :-
     subst(E1, T, X, R1),
@@ -35,7 +41,8 @@ subst(abst(Y, B), T, X, abst(Z, R)) :-
     fv(T, S1),
     union(S0, S1, S01),
     union(S01, [Y], S2),
-    atomic_list_concat(S2, Z),
+    atomic_list_concat(S2, X1),
+    atom_concat(X, X1, Z),    
     subst(B, Z, Y, R0),
     subst(R0, T, X, R).
 
@@ -44,6 +51,7 @@ subst(rec(Y, B), T, X, rec(Z, R)) :-
     fv(T, S1),
     union(S0, S1, S01),
     union(S01, [Y], S2),
-    atomic_list_concat(S2, Z),
+    atomic_list_concat(S2, X1),
+    atom_concat(X, X1, Z), 
     subst(B, Z, Y, R0),
     subst(R0, T, X, R).
