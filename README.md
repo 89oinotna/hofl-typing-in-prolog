@@ -35,7 +35,22 @@ We assign semantics only to terms that are well-formed and closed.
 #### Lazy operational semantics
 <img src="img/hofl_lazy_op.jpg" alt="lazy operational semantics" width="80%"/>
 
-# Usage
+# Requirements & Usage
 
 Requirements:
 - SWI-Prolog
+
+Usage:
+```bash
+$ swipl hofl.pl <?opts> ?term
+```
+To avoid possible errors with the prolog syntax it is recommended to write the term as a string (i.e. "term")
+Flag | Type | Description
+------------ | ------------- | -------------
+ -h, --help |  |  show the help message
+ -m, --mode | Atom | Modes are: <br> - canonical: derive the canonical form <br> - typing: assigns types to a term
+ -f | Atom | read term from \<path\>
+ -o | Atom | write output (typing) to \<path\>
+
+
+
