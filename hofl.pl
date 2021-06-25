@@ -12,14 +12,14 @@ main(Argv) :-
     opts_spec(OptsSpec),
     opt_parse(OptsSpec, Argv, Opts, PositionalArgs),
     (
-        member(help(true), Opts) -> (opt_help(OptsSpec, Help), write(Help));
+        member(help(true), Opts) -> (opt_help(OptsSpec, Help), write("Usage: swipl hofl.pl <?opts> ?term \n"), write(Help));
         
         member(mode(canonical), Opts) -> opts_canonical(Opts, PositionalArgs);
 
         member(mode(typing), Opts) -> opts_type(Opts, PositionalArgs);
 
-        (opt_help(OptsSpec, Help), write(Help))
-    )
+        (opt_help(OptsSpec, Help),write("Usage: swipl hofl.pl <?opts> ?term"), write(Help))
+    )    
     . 
 
 opts_canonical(Opts, PositionalArgs) :-
@@ -94,7 +94,7 @@ opts_spec(
 
     , [opt(outfile), meta('OFILE'), type(atom),
         shortflags([o]),  longflags(['output-file']),
-        help('write output to OFILE')]
+        help('write output (typing) to OFILE')]
 
     , [opt(infile),  meta('IFILE'), type(atom),
         shortflags([f]), help('read term from IFILE')]
