@@ -1,10 +1,17 @@
 :- module(substitutions,[subst/4]).
 :- use_module(freevars).
 
-% to apply capture avoiding substitutions
+
 /* 
+to apply capture avoiding substitutions
+
 fresh names are created by concatenation of all the free variables 
-and the repetition of the variable we were substituting
+and the variable we were substituting
+
+first argument is the term, 
+second argument is the term we are inserting, 
+third argument is the variable, 
+fourth argument is the result.
 */
 
 subst(N, _, _, R) :- number(N), R = N.

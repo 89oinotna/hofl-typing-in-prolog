@@ -1,5 +1,6 @@
 :- module(lexer, [tokenize/2]).
 
+% string to tokens
 tokenize(INPUT, TOKENS) :- 
     string_chars(INPUT, Chars),
     phrase(tokens(TOKENS), Chars).

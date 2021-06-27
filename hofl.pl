@@ -64,23 +64,22 @@ write_file(F, T) :-
     writeln(OS,"\\end{document}"),
     close(OS).
 
-
+% simple clause to try the typing only
 ttype(X, TYPE, TypeTerm) :-
     abstree(X, TERM),!,
     write(TERM),
     format("~n"),
     inferType(TERM, TYPE, TypeTerm).
 
+% simple clause to get the latex typing
 llatex(X) :-
-    abstree(X, TERM),!,
-    write(TERM),
-    format("~n"),
-    inferType(TERM, _, TypedTerm),
+    ttype(X, TYPE, TypeTerm),
     write(TypedTerm),
     format("~n"),
     get_latex(TypedTerm, S),
     write(S).
 
+% simple clause to get the canonical form of a term
 get_canonical(T, C) :- 
     abstree(T, TERM),
     canonic(TERM, C).

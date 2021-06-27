@@ -66,7 +66,7 @@ is_canonic(pair(E1, E2)) :-
     fv(E2, []).
 
 is_canonic(abst(X, B)) :-
-    inferType(abst(X, B), tfun(_), _),
+    inferType(abst(X, B), tfun(_, _), _), !,
     fv(abst(X, B), []).
 
 is_canonic(N) :- number(N).

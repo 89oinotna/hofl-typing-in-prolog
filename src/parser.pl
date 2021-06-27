@@ -1,5 +1,21 @@
 :- module(parser, [parse/2]).
 
+/*
+
+parses the tokens as a term:
+- abst(X, B): lambda abstraction, X (atom) is the variable and B the body
+- app(T0, T1): application
+- rec(X, B): recursion, X (atom) is the variable and B the body
+- cond(C, T1, T2): C is the condition, T1 is the then branch and T2 is the else branch
+- pair(T0, T1)
+- fst(T)
+- snd(T)
+- bin_op(OP, T0, T1): arithmetic operation, OP can be {mul, plus, minus}
+- id(X): variable
+- N: int constant
+
+*/
+
 parse(TOKENS, T) :- phrase(sterm(T), TOKENS).
 
 sterm(X) --> expr(X).

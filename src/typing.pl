@@ -6,8 +6,7 @@ The env list is used to store all the variables in the scope and their type
 so that we can unify on it and propagate everywhere
 */
 
-
-
+% X is the term, T is the type of the term, TypedTerm is the full typed term representation
 inferType(X, T, TypedTerm) :- 
     inferType([], X, T, TypedTerm).
 

@@ -1,5 +1,6 @@
 :- module(freevars, [fv/2]).
 
+% V is the resulting set
 fv(rec(X, B), V) :-
     fv(B, V0),
     subtract(V0, [X], V). 
