@@ -8,6 +8,10 @@ There are also auxiliar predicates for capture-avoiding substituitions, free var
 ### Terms
 <img src="img/hofl_terms.jpg" alt="hofl terms" width="70%"/>
 
+The actual syntax differs by:
+- lambda is replaced by a backslash \
+- multiplication symbol is *
+
 ### Types
 
 τ ::= int | τ0 * τ1 | τ0 → τ1
