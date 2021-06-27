@@ -31,6 +31,7 @@ opts_canonical(Opts, PositionalArgs) :-
     ),
     abstree(T, TERM),!,
     write(TERM),
+    write("\n"),
     canonic(TERM, C),
     write(C).
     %(member(outfile(OF), Opts) -> (\+var(OF), write_file(OF, C))).
@@ -73,7 +74,7 @@ ttype(X, TYPE, TypeTerm) :-
 
 % simple clause to get the latex typing
 llatex(X) :-
-    ttype(X, TYPE, TypeTerm),
+    ttype(X, _, TypedTerm),
     write(TypedTerm),
     format("~n"),
     get_latex(TypedTerm, S),
@@ -102,3 +103,5 @@ opts_spec(
         longflags(['help'] ),shortflags([h]), help('Help')]
     
     ]).
+
+

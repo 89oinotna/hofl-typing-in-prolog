@@ -23,11 +23,11 @@ canonic(bin_op(OP, E1, E2), C) :-
     opp(OP, C1, C2, C).
 
 canonic(cond(T, E1, _), C) :-
-    canonic(T, 0),!,
+    canonic(T, 0),
     canonic(E1, C).
 
 canonic(cond(T, _, E2), C) :-
-    canonic(T, _),!,
+    canonic(T, _),
     canonic(E2, C).
 
 canonic(fst(pair(E1, E2)), C) :-
@@ -39,12 +39,13 @@ canonic(snd(pair(E1, E2)), C) :-
     canonic(E2, C).
 
 canonic(rec(X, B), C) :-
-    subst(B, rec(X, B), X, R),
+    subst(B, rec(X, B), X, R),!,
     canonic(R, C).
 
 canonic(app(E1, E2), C) :-
-    canonic(E1, abst(X, B)),!,
-    subst(B, E2, X, R),!,
+    canonic(E1, abst(X, B)),
+    
+    subst(B, E2, X, R),
     canonic(R, C).
 
 canonic(N, N) :- number(N).
