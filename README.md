@@ -18,7 +18,7 @@ The actual syntax differs by:
 
 
 ### Type judgements
-<img src="img/hofl_type_judgements.jpg" alt="type judgements" width="30%"/>
+<img src="img/hofl_type_judgements.jpg" alt="type judgements" width="35%"/>
 
 
 types are assigned to pre-terms using a set of inference rules
