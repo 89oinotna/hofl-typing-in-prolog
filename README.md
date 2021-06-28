@@ -6,7 +6,7 @@ There are also auxiliar predicates for capture-avoiding substituitions, free var
 ## HOFL
 
 ### Terms
-<img src="img/hofl_terms.jpg" alt="hofl terms" width="70%"/>
+<img src="img/hofl_terms.jpg" alt="hofl terms" width="80%"/>
 
 The actual syntax differs by:
 - lambda is replaced by a backslash \
