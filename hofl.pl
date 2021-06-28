@@ -30,9 +30,11 @@ opts_canonical(Opts, PositionalArgs) :-
         )
     ),
     abstree(T, TERM),!,
+    write("Term: "),
     write(TERM),
     write("\n"),
     canonic(TERM, C),
+    write("Canonical: "),
     write(C).
     %(member(outfile(OF), Opts) -> (\+var(OF), write_file(OF, C))).
     
@@ -47,10 +49,11 @@ opts_type(Opts, PositionalArgs) :-
     abstree(T, TERM),!,
     
     inferType(TERM, _, TypedTerm),
+    write("Term: "),
     write(TypedTerm),
     member(outfile(OF), Opts) -> (
         (\+var(OF), get_latex(TypedTerm, String), write_file(OF, String));
-        (get_latex(TypedTerm, String), format("~n"), write(String))
+        (get_latex(TypedTerm, String), format("~n"), write("Latex: "), write(String))
     )
     . 
 
@@ -68,6 +71,7 @@ write_file(F, T) :-
 % simple clause to try the typing only
 ttype(X, TYPE, TypeTerm) :-
     abstree(X, TERM),!,
+    write("Term: "),
     write(TERM),
     format("~n"),
     inferType(TERM, TYPE, TypeTerm).

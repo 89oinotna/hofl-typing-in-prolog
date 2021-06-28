@@ -16,7 +16,7 @@ fourth argument is the result.
 
 subst(N, _, _, R) :- number(N), R = N.
 
-subst(id(Y), T, Y, T) :- number(T).
+% subst(id(Y), T, Y, T) :- number(T).
 % subst(id(Y), T, Y, id(T)) :- atom(T).
 subst(id(Y), T, Y, T).
 subst(id(Y), _, _, id(Y)).
